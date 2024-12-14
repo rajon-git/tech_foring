@@ -1,5 +1,5 @@
 from django.db import models
-from userauths.models import User
+from django.contrib.auth.models import User
 from projects.models import Project
 
 # Create your models here.
