@@ -1,15 +1,12 @@
-
-from django.contrib import admin
-from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/users/', include('userauths.urls')),
-    path('api/projects/', include('projects.urls')),
-]
+# project_management/urls.py
+from rest_framework.routers import DefaultRouter
+from .views import UserViewSet, ProjectViewSet, TaskViewSet, CommentViewSet
 
 
-urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
-urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_ROOT)
+router = DefaultRouter()
+router.register(r'users', UserViewSet)
+router.register(r'projects', ProjectViewSet)
+router.register(r'tasks', TaskViewSet)
+router.register(r'comments', CommentViewSet)
+
+urlpatterns = router.urls
