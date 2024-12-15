@@ -1,5 +1,5 @@
 from django.db import models
-from userauths.models import User
+from django.contrib.auth.models import User
 from project_management.models import Project
 
 # Create your models here.
@@ -13,8 +13,17 @@ class Task(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     due_date = models.DateTimeField()
 
+    def __str__(self):
+        return self.title
+
 class Comment(models.Model):
     content = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='comments')
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        user_name = self.user.first_name if self.user.first_name else "Unknown User"
+        task_title = self.task.title if self.task.title else "No title"
+        return f"{user_name} commented on {task_title}"
+
