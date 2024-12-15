@@ -1,21 +1,5 @@
-from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
-
-class User(AbstractUser):
-    email = models.EmailField(unique=True)
-    date_joined = models.DateTimeField(auto_now_add=True)
-
-    groups = models.ManyToManyField(
-        Group,
-        related_name="custom_user_set",  
-        blank=True,
-    )
-    user_permissions = models.ManyToManyField(
-        Permission,
-        related_name="custom_user_permissions_set", 
-        blank=True,
-    )
-
+from userauths.models import User
 
 class Project(models.Model):
     name = models.CharField(max_length=255)
@@ -27,19 +11,3 @@ class ProjectMember(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='members')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='project_memberships')
     role = models.CharField(max_length=50, choices=[('Admin', 'Admin'), ('Member', 'Member')])
-
-class Task(models.Model):
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-    status = models.CharField(max_length=50, choices=[('To Do', 'To Do'), ('In Progress', 'In Progress'), ('Done', 'Done')])
-    priority = models.CharField(max_length=50, choices=[('Low', 'Low'), ('Medium', 'Medium'), ('High', 'High')])
-    assigned_to = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='tasks')
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
-    created_at = models.DateTimeField(auto_now_add=True)
-    due_date = models.DateTimeField()
-
-class Comment(models.Model):
-    content = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='comments')
-    created_at = models.DateTimeField(auto_now_add=True)
